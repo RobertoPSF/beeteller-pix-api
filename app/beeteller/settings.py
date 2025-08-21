@@ -27,9 +27,9 @@ SECRET_KEY = 'django-insecure-n^0@)@fqs)7g1u(p_70z1d7$gkx%fn7ie$u6xs5dw@l5($bk&y
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    h.strip()
-    for h in config('ALLOWED_HOSTS', default='0.0.0.0, localhost, 127.0.0.1').split(',')
-    if h.strip()
+    host.strip()
+    for host in config("ALLOWED_HOSTS").split(",")
+    if host.strip()
 ]
 
 

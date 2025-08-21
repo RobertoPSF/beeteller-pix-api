@@ -22,5 +22,15 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    container_name: beeteller-adminer
+    restart: always
+    ports:
+      - "8082:8080"
+    depends_on:
+      - db
+      
 volumes:
   postgres_data:
