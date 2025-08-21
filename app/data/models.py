@@ -24,9 +24,9 @@ class PixStream(models.Model):
 class PixMessage(models.Model):
 
     class MessageStatus(models.TextChoices):
-        PENDING = "pending", "pending"
-        RESERVED = "reserved", "reserved"  
-        CONSUMED = "consumed", "consumed"  
+        PENDING = "pendente", "pendente"
+        RESERVED = "reservado", "reservado"  
+        CONSUMED = "finalizado", "finalizado"  
 
     end_to_end_id = models.CharField(max_length=64, unique=True, db_index=True)
     tx_id = models.CharField(max_length=128)
