@@ -49,7 +49,7 @@ def stream_fetch_and_response(request, stream: PixStream):
     if accept_raw and accept_raw.lower() not in ("application/json", "multipart/json"):
         return JsonResponse({"detail": "Unsupported Accept header. Use application/json or multipart/json."}, status=406)
 
-    is_multipart = (accept_raw or "application/json").lower() == "multipart/json"
+    is_multipart = accepts_multipart(request)
     limit = 10 if is_multipart else 1
 
     deadline = time.monotonic() + 8.0
