@@ -28,6 +28,15 @@ def accepts_multipart(request) -> bool:
     return request.headers.get("Accept", "application/json").lower() == "multipart/json"
 
 
+def consume_and_close_stream(stream: PixStream) -> None:
+    PixMessage.objects.filter(reserved_by=stream, status=PixMessage.MessageStatus.RESERVED).update(
+        status=PixMessage.MessageStatus.CONSUMED, consumed_at=dj_timezone.now()
+    )
+    stream.active = False
+    stream.terminated_at = dj_timezone.now()
+    stream.save(update_fields=["active", "terminated_at"])
+
+
 def stream_fetch_and_response(request, stream: PixStream):
     stream.last_pull_at = dj_timezone.now()
     stream.save(update_fields=["last_pull_at"])
