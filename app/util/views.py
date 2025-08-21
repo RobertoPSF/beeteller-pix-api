@@ -10,14 +10,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
 from data.models import PixMessage
-
-def _generate_random_string(length: int = 16) -> str:
-    return "".join(random.choices(string.ascii_lowercase + string.digits, k=length))
-
-
-def _generate_end_to_end_id(ispb: str) -> str:
-    now = datetime.now(dt_timezone.utc)
-    return f"E{ispb}{now.strftime('%Y%m%d%H%M%S')}{_generate_random_string(8)}"
+from util.utils import generate_random_string, generate_end_to_end_id
 
 
 @csrf_exempt
@@ -31,9 +24,9 @@ def generate_messages(request, ispb: str, number: int):
         amount_cents = random.randint(100, 100000)
         amount = amount_cents / 100
         payer_ispb = "12345678"
-        tx_id = _generate_random_string(18)
+        tx_id = generate_random_string(18)
         message = PixMessage(
-            end_to_end_id=_generate_end_to_end_id(ispb),
+            end_to_end_id=generate_end_to_end_id(ispb),
             tx_id=tx_id,
             amount=amount,
             payment_at=timezone.now(),
