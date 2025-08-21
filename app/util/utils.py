@@ -28,6 +28,10 @@ def accepts_multipart(request) -> bool:
     return request.headers.get("Accept", "application/json").lower() == "multipart/json"
 
 
+def is_valid_ispb(value: str) -> bool:
+    return isinstance(value, str) and len(value) == 8 and value.isdigit()
+
+
 def consume_and_close_stream(stream: PixStream) -> None:
     PixMessage.objects.filter(reserved_by=stream, status=PixMessage.MessageStatus.RESERVED).update(
         status=PixMessage.MessageStatus.CONSUMED, consumed_at=dj_timezone.now()
@@ -41,7 +45,11 @@ def stream_fetch_and_response(request, stream: PixStream):
     stream.last_pull_at = dj_timezone.now()
     stream.save(update_fields=["last_pull_at"])
 
-    is_multipart = accepts_multipart(request)
+    accept_raw = request.headers.get("Accept")
+    if accept_raw and accept_raw.lower() not in ("application/json", "multipart/json"):
+        return JsonResponse({"detail": "Unsupported Accept header. Use application/json or multipart/json."}, status=406)
+
+    is_multipart = (accept_raw or "application/json").lower() == "multipart/json"
     limit = 10 if is_multipart else 1
 
     deadline = time.monotonic() + 8.0

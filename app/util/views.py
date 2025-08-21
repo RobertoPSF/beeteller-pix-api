@@ -10,14 +10,18 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
 from data.models import PixMessage
-from util.utils import generate_random_string, generate_end_to_end_id
+from util.utils import generate_random_string, generate_end_to_end_id, is_valid_ispb
 
 
 @csrf_exempt
 @require_POST
 @transaction.atomic
 def generate_messages(request, ispb: str, number: int):
-    number = max(0, min(number, 1000))
+    if not is_valid_ispb(ispb):
+        return JsonResponse({"detail": "Invalid ispb. Expected 8 digits."}, status=400)
+
+    if number < 1 or number > 1000:
+        return JsonResponse({"detail": "Invalid number. Range allowed: 1..1000."}, status=400)
 
     created: List[PixMessage] = []
     for _ in range(number):
@@ -45,6 +49,9 @@ def generate_messages(request, ispb: str, number: int):
             receiver_tipo_conta="SVGS",
         )
         created.append(message)
+
+    if not created:
+        return JsonResponse({"inserted": 0, "detail": "No messages to insert."}, status=200)
 
     PixMessage.objects.bulk_create(created, batch_size=1000)
     return JsonResponse({"inserted": len(created)}, status=201)
