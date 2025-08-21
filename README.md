@@ -1,5 +1,5 @@
 # beeteller-pix-api
-Api para gerenciamento de mensagens Pix
+Api para gerenciamento de mensagens Pix, o documento contendo as decisões de arquitetura pode ser encontrado [aqui](docs/README.md)
 
 ## Como executar (Docker)
 
@@ -77,5 +77,5 @@ docker exec beeteller-api python manage.py showmigrations data
 ```
 docker exec -it beeteller-db psql -U beeteller -d pix_db -c "\\dt"
 ```
-- Para ter uma melhor visualização do banco de dados acesse "localhost:8082" (adminer) e faça login com os mesmos valores estabelecidos na criação do banco de dados.
+- Para ter uma melhor visualização do banco de dados acesse "localhost:8082" (adminer) e faça login com as credenciais usadas na criação do banco de dados.
 
