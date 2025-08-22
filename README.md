@@ -40,4 +40,3 @@ docker exec beeteller-api python manage.py showmigrations data
 docker exec -it beeteller-db psql -U beeteller -d pix_db -c "\\dt"
 ```
 - Para ter uma melhor visualização do banco de dados acesse "localhost:8082" (adminer) e faça login com as credenciais usadas na criação do banco de dados.
-

@@ -9,6 +9,8 @@ from data.serializers import PixMessageSerializer
 
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone as dj_timezone
+from django.conf import settings
+import logging
 
 
 def generate_random_string(length: int = 16) -> str:
@@ -42,6 +44,7 @@ def consume_and_close_stream(stream: PixStream) -> None:
 
 
 def stream_fetch_and_response(request, stream: PixStream):
+    logger = logging.getLogger(__name__)
     stream.last_pull_at = dj_timezone.now()
     stream.save(update_fields=["last_pull_at"])
 
@@ -52,7 +55,8 @@ def stream_fetch_and_response(request, stream: PixStream):
     is_multipart = accepts_multipart(request)
     limit = 10 if is_multipart else 1
 
-    deadline = time.monotonic() + 8.0
+    timeout_seconds = float(getattr(settings, "STREAM_LONG_POLLING_TIMEOUT_SECONDS", 8.0))
+    deadline = time.monotonic() + timeout_seconds
     messages: List[PixMessage] = []
     while time.monotonic() < deadline:
         messages = list(
@@ -68,6 +72,7 @@ def stream_fetch_and_response(request, stream: PixStream):
             for m in messages:
                 m.mark_reserved(stream)
                 m.save(update_fields=["status", "reserved_by", "reserved_at"])
+            logger.info("stream.reserve", extra={"stream": stream.interation_id, "count": len(messages)})
             break
 
         time.sleep(0.2)
@@ -77,10 +82,12 @@ def stream_fetch_and_response(request, stream: PixStream):
     if not messages:
         response = HttpResponse(status=204)
         response["Pull-Next"] = pull_next
+        logger.info("stream.no_content", extra={"stream": stream.interation_id})
         return response
 
     serializer = PixMessageSerializer(messages if is_multipart else messages[0], many=is_multipart)
     data = serializer.data
     response = JsonResponse(data, safe=not is_multipart)
     response["Pull-Next"] = pull_next
+    logger.info("stream.response", extra={"stream": stream.interation_id, "multipart": is_multipart, "count": len(messages)})
     return response

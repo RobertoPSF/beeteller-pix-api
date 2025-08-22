@@ -141,3 +141,6 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     )
 }
+
+STREAM_MAX_COLLECTORS_PER_ISPB = int(config('STREAM_MAX_COLLECTORS_PER_ISPB', default=6))
+STREAM_LONG_POLLING_TIMEOUT_SECONDS = float(config('STREAM_LONG_POLLING_TIMEOUT_SECONDS', default=8.0))

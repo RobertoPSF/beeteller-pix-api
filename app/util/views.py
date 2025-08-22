@@ -1,5 +1,4 @@
 import random
-import string
 from datetime import datetime, timezone as dt_timezone
 from typing import List
 
