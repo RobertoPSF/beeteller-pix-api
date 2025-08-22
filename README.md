@@ -66,6 +66,16 @@ http://localhost:8000/api/pix/{ispb}/stream/{interationId} - método DELETE
 http://localhost:8000/api/pix/32074986/stream/<interationId>"
 ```
 
+## Testes
+
+- Para executar os testes, execute o container normalmente
+- Depois de já estar rodando, execute o seguinte comando
+```
+docker exec beeteller-api python manage.py test <app-name>
+
+docker exec beeteller-api python manage.py test health
+```
+
 ## Dicas
 
 - Caso o host `0.0.0.0` não esteja permitido, ajuste `ALLOWED_HOSTS` no `.env`.
