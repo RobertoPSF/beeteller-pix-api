@@ -83,3 +83,18 @@ class TestStreamStart(TestCase):
 
         self.assertLessEqual(len(body), 10)
 
+
+    def test_delete_start_stream_not_allowed(self):
+        resp = self.client.delete(f"/api/pix/{self.ispb}/stream/start")
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+    def test_put_start_stream_not_allowed(self):
+        resp = self.client.put(f"/api/pix/{self.ispb}/stream/start")
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+    def test_post_start_stream_not_allowed(self):
+        resp = self.client.post(f"/api/pix/{self.ispb}/stream/start")
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
