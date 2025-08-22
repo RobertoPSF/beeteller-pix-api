@@ -9,6 +9,7 @@ class TestUtilGenerateMessages(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
 
+
     def test_generate_messages_success(self):
         ispb = "12345678"
         number = 5
@@ -21,6 +22,7 @@ class TestUtilGenerateMessages(TestCase):
         self.assertEqual(qs.count(), number)
         self.assertTrue(qs.filter(status=PixMessage.MessageStatus.PENDING).exists())
 
+
     def test_generate_messages_invalid_short_ispb(self):
         ispb = "123"
         number = 5
@@ -28,6 +30,7 @@ class TestUtilGenerateMessages(TestCase):
         resp = self.client.post(f"/api/util/msgs/{ispb}/{number}")
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("detail", resp.json())
+
 
     def test_generate_messages_invalid_long_ispb(self):
         ispb = "123456789"
@@ -37,6 +40,7 @@ class TestUtilGenerateMessages(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("detail", resp.json())
 
+
     def test_generate_messages_invalid_number_low(self):
         ispb = "12345678"
         number = 0
@@ -44,6 +48,7 @@ class TestUtilGenerateMessages(TestCase):
         resp = self.client.post(f"/api/util/msgs/{ispb}/{number}")
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("detail", resp.json())
+
 
     def test_generate_messages_invalid_number_high(self):
         ispb = "12345678"
@@ -53,6 +58,7 @@ class TestUtilGenerateMessages(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("detail", resp.json())
 
+
     def test_generate_messages_method_get_not_allowed(self):
         ispb = "12345678"
         number = 3
@@ -60,12 +66,14 @@ class TestUtilGenerateMessages(TestCase):
         resp = self.client.get(f"/api/util/msgs/{ispb}/{number}")
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
+
     def test_generate_messages_method_put_not_allowed(self):
         ispb = "12345678"
         number = 3
 
         resp = self.client.put(f"/api/util/msgs/{ispb}/{number}")
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
     def test_generate_messages_method_delete_not_allowed(self):
         ispb = "12345678"
