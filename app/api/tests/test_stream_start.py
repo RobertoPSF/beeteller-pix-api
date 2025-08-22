@@ -84,6 +84,31 @@ class TestStreamStart(TestCase):
         self.assertLessEqual(len(body), 10)
 
 
+    def test_no_messages_returns_204_with_pull_next(self):
+        resp = self.client.get(f"/api/pix/{self.ispb}/stream/start", HTTP_ACCEPT="application/json")
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertIn("Pull-Next", resp)
+
+
+    def test_parallel_streams_do_not_duplicate_messages(self):
+        self._create_message("p1")
+        self._create_message("p2")
+
+        resp_a = self.client.get(
+            f"/api/pix/{self.ispb}/stream/start", HTTP_ACCEPT="application/json"
+        )
+        self.assertEqual(resp_a.status_code, status.HTTP_200_OK)
+        msg_a = resp_a.json()["endToEndId"]
+
+        resp_b = self.client.get(
+            f"/api/pix/{self.ispb}/stream/start", HTTP_ACCEPT="application/json"
+        )
+        self.assertEqual(resp_b.status_code, status.HTTP_200_OK)
+        msg_b = resp_b.json()["endToEndId"]
+
+        self.assertNotEqual(msg_a, msg_b)
+
+
     def test_delete_start_stream_not_allowed(self):
         resp = self.client.delete(f"/api/pix/{self.ispb}/stream/start")
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

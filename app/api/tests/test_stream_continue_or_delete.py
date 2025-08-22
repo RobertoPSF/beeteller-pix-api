@@ -129,3 +129,34 @@ class TestStreamContinueAndDelete(TestCase):
     def test_post_stream_continue_not_allowed(self):
         resp = self.client.post(f"/api/pix/{self.ispb}/stream/test")
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+    def test_no_messages_returns_204_with_pull_next(self):
+        stream = self._create_stream("s204")
+        resp = self.client.get(
+            f"/api/pix/{self.ispb}/stream/{stream.interation_id}", HTTP_ACCEPT="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertIn("Pull-Next", resp)
+
+
+    def test_parallel_streams_continuation_do_not_duplicate_messages(self):
+        self._create_message("p1")
+        self._create_message("p2")
+        
+        s1 = self._create_stream("ps1")
+        s2 = self._create_stream("ps2")
+
+        r1 = self.client.get(
+            f"/api/pix/{self.ispb}/stream/{s1.interation_id}", HTTP_ACCEPT="application/json"
+        )
+        self.assertEqual(r1.status_code, status.HTTP_200_OK)
+        id1 = r1.json()["endToEndId"]
+
+        r2 = self.client.get(
+            f"/api/pix/{self.ispb}/stream/{s2.interation_id}", HTTP_ACCEPT="application/json"
+        )
+        self.assertEqual(r2.status_code, status.HTTP_200_OK)
+        id2 = r2.json()["endToEndId"]
+
+        self.assertNotEqual(id1, id2)
