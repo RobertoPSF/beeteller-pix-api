@@ -1,5 +1,5 @@
 # beeteller-pix-api
-Api para gerenciamento de mensagens Pix, o documento contendo as decisões de arquitetura pode ser encontrado [aqui](docs/README.md)
+Api para gerenciamento de mensagens Pix, o documento contendo o relato de experiência e as decisões de arquitetura pode ser encontrado [aqui](docs/README.md)
 
 O documento com exemplos de requests e responses pode ser encontrado [aqui](docs/examples.md)
 

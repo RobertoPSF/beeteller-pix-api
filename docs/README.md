@@ -1,3 +1,17 @@
+### Como foi a exeperiência de desenvolver esse projeto
+
+Optei por utilizar Python como linguagem principal por ser a que tenho maior domínio. Para o desenvolvimento da API, escolhi o Django, um framework que até então eu não havia utilizado, mas que se mostrou extremamente prático. Uma vez organizada a árvore de diretórios, bastou executar alguns comandos para ter toda a configuração inicial pronta, permitindo que eu me concentrasse na definição e implementação das funcionalidades.
+
+Como primeiro passo, criei a rota health, com o objetivo de garantir que o projeto estava funcionando corretamente. Essa prática, que aprendi no meu trabalho, foi importante não apenas pela facilidade de implementação, mas também porque o status da aplicação precisava ser validado automaticamente por um bot após cada deploy.
+
+Em seguida, analisei cuidadosamente os requisitos e modelei o banco de dados. A partir disso, implementei a rota de criação de mensagens aleatórias e, logo depois, desenvolvi as rotas para iniciar uma stream e, por último, para consumir ou deletar a stream criada, sempre respeitando as regras estabelecidas no documento original do projeto.
+
+A parte mais desafiadora do desenvolvimento foi implementar a lógica da stream. Como eu nunca havia trabalhado com algo semelhante, precisei entender previamente como o mecanismo funcionava para então aplicá-lo corretamente na solução. Apesar da curva inicial de aprendizado, a implementação acabou sendo razoavelmente tranquila depois que compreendi os conceitos envolvidos.
+
+Durante todo o processo, tive o cuidado de organizar os arquivos de forma clara e consistente, garantindo que cada componente estivesse localizado no diretório adequado, o que facilitou a manutenção e tornou as responsabilidades do código mais evidentes.
+
+Por fim, implementei testes automatizados para validar os principais fluxos da aplicação e adotei algumas boas práticas de desenvolvimento, assegurando qualidade, legibilidade e confiabilidade ao projeto.
+
 ### Documentação de decisões de arquitetura e implementação
 
 #### Objetivo
@@ -12,7 +26,7 @@ O objetivo desse projeto é construir uma API para coleta de mensagens Pix com s
   - `data`: modelos de domínio e serializers
   - `api`: rotas de stream Pix (leitura/continuação/encerramento)
   - `util`: rotas utilitárias para semear mensagens e utilidades compartilhadas
-  - `health`: rota de health check, primeira funcionalidade a ser implementada para garantir que o serviço estava operando
+  - `health`: rota de health check
 - **Arquivos relevantes**
   - `app/data/models.py`: `PixStream`, `PixMessage`
   - `app/data/serializers.py`: `PixMessageSerializer`
